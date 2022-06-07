@@ -12,7 +12,7 @@ task("deploy", "Deploys a contract")
 .setAction(async function(taskArguments, hre){
     const account = getAccount();
     const contractFactory = await hre.ethers.getContractFactory(taskArguments.contract, account);
-    const deployedContract = await contractFactory.deploy("0xe9d6b74ec299d0d4dc34cb3091867ab4e29ace17");
+    const deployedContract = await contractFactory.deploy();
     console.log(`Contract deployed to: ${deployedContract.address}`);
 
 });

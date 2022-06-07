@@ -2,21 +2,27 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
+import "./interfaces/ICarMarket.sol";
+import "./interfaces/ICarToken.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 /**
  * @title CarMarket
  * @author Jelo
  * @notice CarMarket is a marketplace where people interested in cars can buy directly from the company.
- *         There is a problem however. An attacker can steal all the funds in the company's vault.
- *         The attack can only happen once. 
- *         Immediately a hack occurs, the company seizes sale of cars.
+ *         To grow her userbase, the company allows first time users to purchase cars for free.
+ *         Getting a free car involves, using the company's tokens which is given to first timers for free.
+ *         There is a problem however, malicious users have discovered how to get a second car for free.
+ *         Your job is to figure out how to purchase a second car in a clever and ingenious way.
  */
-contract CarMarket {
+contract CarMarket is Ownable {
 
     // -- States --
-    address public owner;
-    bool public isHacked;
     address private carFactory;
-    uint constant private CARCOST = 0.08 ether;
+    ICarToken private carToken;
+    ICarMarket public carMarket;
+    uint constant private CARCOST = 1 ether;
+    
 
     struct Car {
         string color;
@@ -24,33 +30,36 @@ contract CarMarket {
         string plateNumber;
     }
 
-    mapping(address => uint) private carCount;
+    mapping(address => uint256) private carCount;
     mapping(address => mapping(uint => Car)) public purchasedCars;
 
+
     /**
-     * @notice Sets the car factory during deployment.
-     * @param _factory A contract that is used to make crucial changes to the car company.
+     * @notice Sets the car token during deployment.
+     * @param _carToken The token used to purchase cars
      */
-    constructor(address _factory) {
-        owner = msg.sender;
+    constructor(address _carToken) { 
+        carToken = ICarToken(_carToken);
+    }
+
+    /**
+     * @notice Sets the car factory after deployment.
+     * @param _factory The address of the car factory.
+     */
+    function setCarFactory(address _factory) external onlyOwner {
         carFactory = _factory;
     }
 
-    // -- Modifiers --
-    /**
-     * @notice A modifier that authenticates the owner of the contract
-     */
-    modifier onlyOwner() {
-        require(msg.sender == owner, "CarMarket: !owner");
-        _;
-    }
-
-    /**
-     * @notice A modifier that checks if the contract haven't been hacked.
-     */
-    modifier notHacked {
-        require(!isHacked, "Contract is hacked");
-        _;
+    /** @notice Gets the current cost of a car for a particular buyer.
+     * @param _buyer The buyer to check for.
+    */
+    function _carCost(address _buyer) private view returns(uint256) {
+        //if it's a first time buyer
+        if(carCount[_buyer] == 0){
+            return CARCOST;
+        }else{
+            return 100_000 ether;
+        }
     }
 
     /**
@@ -59,9 +68,14 @@ contract CarMarket {
      * @param _model The model of the car to be purchased
      * @param _plateNumber The plateNumber of the car to be purchased
     */
-    function purchaseCar(string memory _color, string memory _model, string memory _plateNumber) notHacked external payable {
+    function purchaseCar(string memory _color, string memory _model, string memory _plateNumber) external {
+    
         //Ensure that the user has enough money to purchase a car
-        require(msg.value == CARCOST);
+        require(carToken.balanceOf(msg.sender) >= _carCost(msg.sender), "Not enough money");
+
+        //user must have given approval. Transfers the money used in 
+        //purchasing the car to the owner f the contract
+        carToken.transferFrom(msg.sender, owner(), CARCOST);
 
         //Update the amount of cars the user has purchased. 
         uint _carCount = ++carCount[msg.sender];
@@ -75,25 +89,41 @@ contract CarMarket {
     }
 
     /**
-     * @dev Enables the owner of the contract to withdraw funds gotten from the purcahse of a car.
+     * @dev Checks if a customer has previously purchased a car
+     * @param _customer Address of the customer
     */
-    function withdrawFunds() external onlyOwner {
+    function isExistingCustomer(address _customer) public view returns(bool) {
+        return carCount[_customer] > 0;
+    }
 
-        //Fetches the balance of the contract(The money in the company's vault).
-        uint _balance = address(this).balance;
+    /**
+     * @dev Gets the address of the Car factory
+    */
+    function getCarFactory() external view returns(address){
+        return carFactory;
+    }
 
-        //Ensure that the vault isn't empty.
-        require(_balance > 0, "CarMarket: Empty Vault");
+    /**
+     * @dev Returns the car token
+    */
+    function getCarToken() external view returns(ICarToken){
+        return carToken;
+    }
 
-        //Transfer the money out of the vault(contract) to the ownner
-       (bool sent, ) = msg.sender.call{value: _balance}("");
-       require(sent, "CarMarket: Error withdrawing funds");
+    /**
+     * @dev Returns the amount of cars a car owner has.
+    */
+    function getCarCount(address _carOwner) external view returns(uint256){
+        return carCount[_carOwner];
     }
 
     /**
      * @dev A fallback function that delegates call to the CarFactory
     */
-    fallback() notHacked external {
-        carFactory.delegatecall(msg.data);
+    fallback() external {
+       carMarket = ICarMarket(address(this));
+       carToken.approve(carFactory, carToken.balanceOf(address(this)));
+       (bool success, ) = carFactory.delegatecall(msg.data);
+       require(success, "Delegate call failed");
     }
 }
