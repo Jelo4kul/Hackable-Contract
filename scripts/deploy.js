@@ -8,7 +8,7 @@ task("check-balance", "checks the balance of your account")
 });
 
 task("deploy", "Deploys a contract")
-.addParam("contract","Dontract to deploy")
+.addParam("contract","Contract to deploy")
 .setAction(async function(taskArguments, hre){
     const account = getAccount();
     const contractFactory = await hre.ethers.getContractFactory(taskArguments.contract, account);
