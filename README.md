@@ -10,7 +10,9 @@ There is a bug however. A smart user can bypass this restriction to purchase mor
 Figure out how to purchase more than one car from the car company for free.
 
 CarToken: deployed to; https://rinkeby.etherscan.io/token/0x3b84bf5d380418412cedfa960608eb72ff6a8f2e
+
 CarMarket: deployed to; https://rinkeby.etherscan.io/address/0xdd8183b98f0fdfcfe82413ce98831e6d16f8150d
+
 CarFactory: deployed to; https://rinkeby.etherscan.io/address/0x6948d87177d580fd958386531450f254bb3179bd
 
 # How to use
