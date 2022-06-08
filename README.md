@@ -14,10 +14,16 @@ CarMarket: deployed to; https://rinkeby.etherscan.io/address/0xdd8183b98f0fdfcfe
 CarFactory: deployed to; https://rinkeby.etherscan.io/address/0x6948d87177d580fd958386531450f254bb3179bd
 
 # How to use
+
 Deploy the CarToken contract.
+
 Deploy the CarMarket contract with the address of the CarToken contract.
+
 Deploy the CarFactory contract with the address of the CarMarket and CarToken contract.
+
 In the CarMarket contract, set the address of the CarFactory by calling the setCarFactory() function.
+
 In the CarToken contract, mint out 100, 000 CCY tokens to both the CarMarket and CarFactory contract, by calling the privilegeMint function.
+
 Everything is set at this point. The attackers can come in rolling.
  
