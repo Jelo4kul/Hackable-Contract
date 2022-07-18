@@ -19,11 +19,11 @@ CarFactory: deployed to; https://rinkeby.etherscan.io/address/0x6948d87177d580fd
 
 ## Goerli
 
-CarToken: deployed to; https://goerli.etherscan.io/address/0x82b9835f1013d9fc99defdc63ec4807998219b3b
+CarToken: deployed to; https://goerli.etherscan.io/address/0x66408824a99ff61ae2e032e3c7a461ded1a6718e
 
-CarMarket: deployed to; https://goerli.etherscan.io/address/0xf64db07e85089427dd630e3cb65acc7f3394f6ea
+CarMarket: deployed to; https://goerli.etherscan.io/address/0x07abfcced19aeb5148c284cd39a9ff2ac835960a
 
-CarFactory: deployed to; https://goerli.etherscan.io/address/0x66ec6b0f30754123bdf9acf4d8f4e2bdf5d36f4f
+CarFactory: deployed to; https://goerli.etherscan.io/address/0x012f0c715725683a5405b596f4f55d4ad3046854
 
 
 # How to use
