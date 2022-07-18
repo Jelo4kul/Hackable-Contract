@@ -39,14 +39,14 @@ describe("Car Factory contract", () => {
     describe("flashLoan", () => {
         describe("when called", () => {
             it("should revert if the borrower is not an existing customer", async () => {
-                await expect(carFactory.connect(address1).flashLoan(AMT_TO_BORROW, address1.address)).to.be.revertedWith("Not existing customer");
+                await expect(carFactory.connect(address1).flashLoan(AMT_TO_BORROW)).to.be.revertedWith("Not existing customer");
             });
 
             it("should revert if amount to borrow is greater than amount to loan", async () => {
                 await carToken.connect(address1).mint();
                 await carToken.connect(address1).approve(carMarket.address, DEFAULT_CAR_COST);
                 await carMarket.connect(address1).purchaseCar("Red", "Camry", "23KLNVAB");
-                await expect(carFactory.connect(address1).flashLoan(AMT_TO_BORROW, address1.address)).to.be.revertedWith("Amount not available");
+                await expect(carFactory.connect(address1).flashLoan(AMT_TO_BORROW)).to.be.revertedWith("Amount not available");
             });
         });
     });

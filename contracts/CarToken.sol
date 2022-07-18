@@ -8,15 +8,15 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title CarToken contract
  * @dev This is the implementation of the CarToken contract
- * @notice There is a capped supply of 200,100 tokens.
- *         100 tokens is reserved for the public
+ * @notice There is a capped supply of 210,000 tokens.
+ *         10,000 tokens is reserved for the public
  *         A user can only mint once
  */
 contract CarToken is ERC20, Ownable {
 
     // ---- States ----
     mapping(address => bool) hasMinted;
-    uint256 constant private MAX_SUPPLY = 200_100 * 1e18;
+    uint256 constant private MAX_SUPPLY = 210000 * 1e18;
     uint256 public count;
 
      /**

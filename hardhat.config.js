@@ -13,11 +13,15 @@ const { ALCHEMY_KEY, PRIVATE_KEY, ETHERSCAN_API_KEY } = process.env;
 
 module.exports = {
   solidity: "0.8.1",
-  defaultNetwork: "rinkeby",
+  defaultNetwork: "goerli",
   networks: {
     hardhat: {},
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_KEY}`,
+      account: [`0x${PRIVATE_KEY}`]
+    },
+    goerli: {
+      url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`,
       account: [`0x${PRIVATE_KEY}`]
     },
     ethereum: {

@@ -22,7 +22,7 @@ contract CarFactory {
 
     /**
      * @notice Sets the car Market and car token during deployment.
-     * @param _carMarket The exchange where car trades take placs.
+     * @param _carMarket The exchange where car trades take place.
      * @param _carToken The token used to purchase cars.
      */
     constructor(address _carMarket, address _carToken) {
@@ -33,11 +33,10 @@ contract CarFactory {
      /**
      * @notice Gives out flashLoan to an existing customer.
      * @param _amount The amount to be borrowed.
-     * @param _customer The address of the customer that wants to borrow.
     */
-    function flashLoan(uint256 _amount, address _customer) external {
+    function flashLoan(uint256 _amount) external {
         //checks if the address has purchased a car previously.
-        require(carMarket.isExistingCustomer(_customer), "Not existing customer");
+        require(carMarket.isExistingCustomer(msg.sender), "Not existing customer");
 
         //fetches the balance of the carFactory before loaning out.
         uint balanceBefore = carToken.balanceOf(carFactory);
@@ -45,7 +44,7 @@ contract CarFactory {
         //check if there is enough amount in the contract to borrow.
         require(balanceBefore >= _amount, "Amount not available");
 
-        //transfers the amount ot be borrowed to the borrower
+        //transfers the amount to be borrowed to the borrower
         carToken.transfer(msg.sender, _amount);
 
         (bool success, ) = msg.sender.call(abi.encodeWithSignature("receivedCarToken(address)", address(this)));

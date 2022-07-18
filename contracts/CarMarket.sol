@@ -74,7 +74,7 @@ contract CarMarket is Ownable {
         require(carToken.balanceOf(msg.sender) >= _carCost(msg.sender), "Not enough money");
 
         //user must have given approval. Transfers the money used in 
-        //purchasing the car to the owner f the contract
+        //purchasing the car to the owner of the contract
         carToken.transferFrom(msg.sender, owner(), CARCOST);
 
         //Update the amount of cars the user has purchased. 
